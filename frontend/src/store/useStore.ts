@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { request } from "@/utils/request";
-import { User, Blog, AuthResponse, PaginationBlogs } from "../api/types";
+import { User, Blog, AuthResponse, PaginationBlogs } from "@/api/types";
+import router from "@/router";
 
 export const useStore = defineStore("main", {
   state: () => ({
@@ -11,19 +12,19 @@ export const useStore = defineStore("main", {
   actions: {
     async fetchBlogs(page = 1) {
       const response = await request.get<PaginationBlogs>(
-        `/api/posts?page=${page}`
+        `/blogs?page=${page}`
       );
       this.blogs = response.data.results;
     },
-    async login(credentials: { email: string; password: string }) {
-      const response = await request.post<AuthResponse>(
-        "/api/login/",
-        credentials
-      );
+    async login(email: string, password: string) {
+      const response = await request.post<AuthResponse>("login/", {
+        email,
+        password,
+      });
       this.user = response.data.user;
       this.token = response.data.access_token;
       localStorage.setItem("token", this.token || "");
-      request.defaults.headers.common["Authorization"] = `Bearer ${this.token}`;
+      router.push("/");
     },
     async register(user: {
       username: string;
@@ -32,13 +33,13 @@ export const useStore = defineStore("main", {
       first_name: string;
       last_name: string;
     }) {
-      await request.post("/api/register/", user);
+      await request.post("register/", user);
     },
     async createPost(post: Blog) {
-      await request.post("/api/posts/", post);
+      await request.post("blogs/", post);
     },
     async editPost(id: number, post: Blog) {
-      await request.put(`/api/posts/${id}/`, post);
+      await request.put(`blogs/${id}/`, post);
     },
   },
 });
