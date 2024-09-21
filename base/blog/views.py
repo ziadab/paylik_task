@@ -11,9 +11,19 @@ class BlogPostListCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        title = request.query_params.get("title", None)
+        author = request.query_params.get("author", None)
+
         paginator = PageNumberPagination()
         paginator.page_size = 10
+
         queryset = BlogPost.objects.all().order_by("-created_at")
+
+        if author:
+            queryset = queryset.filter(author__username=author)
+        if title:
+            queryset = queryset.filter(title__icontains=title)
+
         result_page = paginator.paginate_queryset(queryset, request)
         serializer = BlogPostSerializer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
