@@ -32,9 +32,7 @@ def get_comments(
     skip: int = 0,
     limit: int = 10,
     db: Session = Depends(get_db),
-    current_user: TokenData = Depends(get_current_user),
 ):
-    print(current_user)
     return actions.get_comments_by_post(db, post_id, skip, limit)
 
 

@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from models import Comment
 
 
@@ -10,6 +10,7 @@ def get_comments_by_post(db: Session, post_id: int, skip: int = 0, limit: int = 
     return (
         db.query(Comment)
         .filter(Comment.post_id == post_id)
+        .options(joinedload(Comment.user))
         .offset(skip)
         .limit(limit)
         .all()
