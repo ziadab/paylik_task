@@ -26,7 +26,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-%qopc(dswwlhh^p6r^08g4)=x2i5jqp@ckxf@p=t^h1p)$7n1$"
+SECRET_KEY = env("JWT_SECRET")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -151,4 +151,5 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_LIFETIME": timedelta(days=30),
     "SLIDING_TOKEN_REFRESH_LIFETIME_LATE_USER": timedelta(days=1),
     "SLIDING_TOKEN_LIFETIME_LATE_USER": timedelta(days=30),
+    "ALGORITHM": env("JWT_ALGORITHM"),
 }
