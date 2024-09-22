@@ -23,7 +23,7 @@
                 </div>
 
                 <div class="mb-8">
-                    <button @click="login()" :disabled="store.loading" :class="{
+                    <button @click="login" :disabled="store.loading" :class="{
                         'bg-indigo-600 hover:bg-indigo-700': !store.loading,
                         'bg-gray-400 cursor-not-allowed': store.loading
                     }"
@@ -62,7 +62,7 @@ watch(
     () => store.error,
     (newError) => {
         if (newError) {
-            messageApi.error(newError); // Show error message when error changes
+            messageApi.error(newError);
         }
     }
 );

@@ -17,11 +17,12 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const isAuthenticated = Cookies.get("token") || null;
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next({ path: "/login" });
-  } else {
-    next();
-  }
+  if ((to.path === "/login" || to.path === "/register") && isAuthenticated)
+    next({ path: "/" });
+
+  if (to.meta.requiresAuth && !isAuthenticated) next({ path: "/login" });
+
+  next();
 });
 
 export default router;
