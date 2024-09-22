@@ -1,16 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/views/Home.vue";
-// import SinglePost from "@/views/SinglePost.vue";
-// import Register from "@/views/Register.vue";
 import Login from "@/views/Login.vue";
-// import CreateEditPost from "@/views/CreateEditPost.vue";
+import Register from "@/views/Register.vue";
+import Cookies from "js-cookie";
 
 const routes = [
-  { path: "/", component: Home },
-  //   { path: "/post/:id", component: SinglePost },
-  //   { path: "/register", component: Register },
+  { path: "/", component: Home, meta: { requiresAuth: true } },
   { path: "/login", component: Login },
-  //   { path: "/create-edit-post/:id?", component: CreateEditPost },
+  { path: "/register", component: Register },
 ];
 
 const router = createRouter({
@@ -18,11 +15,13 @@ const router = createRouter({
   routes,
 });
 
-// router.beforeEach((to, from, next) => {
-//   const isAuthenticated = localStorage.getItem("token") || null;
-//   console.log(!isAuthenticated && to.name !== "Login");
-//   if (to.name !== "Login" && !isAuthenticated) next({ path: "/login" });
-//   else next();
-// });
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = Cookies.get("token") || null;
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next({ path: "/login" });
+  } else {
+    next();
+  }
+});
 
 export default router;

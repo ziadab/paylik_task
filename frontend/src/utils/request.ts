@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const request = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -6,7 +7,7 @@ const request = axios.create({
 
 request.interceptors.request.use(
   async function (config) {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
     if (token) config.headers.Authorization = `Bearer ${token}`;
 
     return config;

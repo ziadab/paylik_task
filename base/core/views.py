@@ -31,7 +31,12 @@ class LoginView(APIView):
                     {
                         "message": "Login successful",
                         "access_token": str(refresh.access_token),
-                        "refresh": str(refresh),
+                        "refresh_token": str(refresh),
+                        "user": {
+                            "username": user.username,
+                            "first_name": user.first_name,
+                            "last_name": user.last_name,
+                        },
                     },
                     status=status.HTTP_200_OK,
                 )
@@ -55,7 +60,12 @@ class RegisterView(APIView):
                 {
                     "message": "User created successfully",
                     "access_token": str(refresh.access_token),
-                    "refresh": str(refresh),
+                    "refresh_token": str(refresh),
+                    "user": {
+                        "username": user.username,
+                        "first_name": user.first_name,
+                        "last_name": user.last_name,
+                    },
                 },
                 status=status.HTTP_201_CREATED,
             )
