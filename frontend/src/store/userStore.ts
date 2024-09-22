@@ -51,5 +51,12 @@ export const userStore = defineStore("user", {
         this.loading = false;
       }
     },
+
+    async logout() {
+      this.user = null;
+      this.token = null;
+      Cookies.remove("token");
+      router.push("/login");
+    },
   },
 });

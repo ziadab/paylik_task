@@ -15,7 +15,7 @@ class BlogPostListCreateView(APIView):
         author = request.query_params.get("author", None)
 
         paginator = PageNumberPagination()
-        paginator.page_size = 10
+        paginator.page_size_query_param = "page_size"
 
         queryset = BlogPost.objects.all().order_by("-created_at")
 

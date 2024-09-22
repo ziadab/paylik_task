@@ -1,5 +1,5 @@
 <template>
-    <div class="mx-auto min-h-screen max-w-xs px-2 md:max-w-5xl flex justify-center items-center">
+    <Container additionalClasses="flex justify-center items-center">
         <div class="w-1/2">
             <div class="text-center ">
                 <h1 class="text-4xl font-bold">Register</h1>
@@ -46,22 +46,22 @@
 
             <div class="mb-5">
                 <button @click="register" :disabled="store.loading" :class="{
-                    'bg-indigo-600 hover:bg-indigo-700': !store.loading,
+                    'bg-gray-950 hover:bg-gray-700': !store.loading,
                     'bg-gray-400 cursor-not-allowed': store.loading
                 }"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                     <span v-if="store.loading">Creating your account...</span>
                     <span v-else>Register</span>
                 </button>
             </div>
             <div class="mb-4">
                 <RouterLink to="/login" :disabled="store.loading"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-950 hover:bg-gray-700  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                     Already have an account? Login
                 </RouterLink>
             </div>
         </div>
-    </div>
+    </Container>
     <context-holder />
 </template>
 
@@ -69,6 +69,7 @@
 import { userStore } from "@/store/userStore"
 import { ref, watch } from 'vue'
 import { message } from 'ant-design-vue';
+import Container from "@/components/Container.vue";
 
 const store = userStore()
 const [messageApi, contextHolder] = message.useMessage()
