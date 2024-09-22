@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { request } from "@/utils/request";
 import { Blog, PaginationBlogs } from "@/api/types";
+import router from "@/router";
 
 export const blogStore = defineStore("blog", {
   state: () => ({
@@ -33,6 +34,19 @@ export const blogStore = defineStore("blog", {
         this.previous = data.previous;
       } catch (error: any) {
         this.error = "Error fetching blogs. Please try again later.";
+      } finally {
+        this.loading = false;
+      }
+    },
+    async createBlog(blog: { title: string; content: string }) {
+      this.loading = true;
+      this.error = null;
+      try {
+        const { data } = await request.post<Blog>("blogs/", blog);
+        router.push(`/blogs/${data.id}`);
+        this.fetchBlogs();
+      } catch (error: any) {
+        this.error = "Error creating blog. Please try again later.";
       } finally {
         this.loading = false;
       }
