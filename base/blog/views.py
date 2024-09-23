@@ -43,10 +43,14 @@ class BlogPostDetailView(APIView):
         try:
             return BlogPost.objects.get(pk=pk)
         except BlogPost.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"message": "Blog does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     def get(self, request, pk):
         blog_post = self.get_object(pk)
+        if isinstance(blog_post, Response):
+            return blog_post
         serializer = BlogPostSerializer(blog_post)
         return Response(serializer.data)
 

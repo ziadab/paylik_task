@@ -16,7 +16,10 @@
             }}</span>
           </div>
         </div>
-        <div class="flex">
+        <div
+          class="flex"
+          v-if="userstore.user?.username == blogstore.blog?.author"
+        >
           <button class="px-8 py-2 bg-gray-700 text-white rounded">Edit</button>
           <button
             class="px-8 py-2 bg-red-700 text-white rounded ml-4"
@@ -39,11 +42,14 @@ import dayjs from "dayjs";
 
 import { useRoute, useRouter } from "vue-router";
 import { blogStore } from "@/store/blogStore";
+import { userStore } from "@/store/userStore";
 import { onMounted, onUnmounted } from "vue";
 
 const route = useRoute();
 const router = useRouter();
+
 const blogstore = blogStore();
+const userstore = userStore();
 
 const id = route.params.id as string;
 
