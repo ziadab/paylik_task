@@ -1,15 +1,16 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from database import get_db
 from auth import get_current_user, TokenData
-from dotenv import load_dotenv
 import schemas
 import models
 import actions
 
 
-load_dotenv()
 app = FastAPI()
 
 app.add_middleware(
