@@ -1,15 +1,47 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import BlogPost
-from .serializers import BlogPostSerializer
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
+from .models import BlogPost
+from .serializers import BlogPostSerializer
 
 
 class BlogPostListCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "title",
+                type=str,
+                required=False,
+                description="Filter blog posts by title (partial match).",
+            ),
+            OpenApiParameter(
+                "author",
+                type=str,
+                required=False,
+                description="Filter blog posts by author's username.",
+            ),
+            OpenApiParameter(
+                "page_size",
+                type=int,
+                required=False,
+                description="Number of posts per page.",
+            ),
+            OpenApiParameter(
+                "page", type=int, required=False, description="Page number."
+            ),
+        ],
+        responses={
+            200: BlogPostSerializer(many=True),
+            401: str,
+            400: str,
+        },
+        description="Retrieve a list of blog posts with optional filtering and pagination.",
+    )
     def get(self, request):
         title = request.query_params.get("title", None)
         author = request.query_params.get("author", None)
@@ -28,6 +60,7 @@ class BlogPostListCreateView(APIView):
         serializer = BlogPostSerializer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
 
+    @extend_schema(request=BlogPostSerializer, responses={201: BlogPostSerializer})
     def post(self, request):
         serializer = BlogPostSerializer(data=request.data)
         if serializer.is_valid():
@@ -47,6 +80,10 @@ class BlogPostDetailView(APIView):
                 {"message": "Blog does not exist"}, status=status.HTTP_404_NOT_FOUND
             )
 
+    @extend_schema(
+        responses={200: BlogPostSerializer, 404: str},
+        description="Retrieve a specific blog post by ID.",
+    )
     def get(self, request, pk):
         blog_post = self.get_object(pk)
         if isinstance(blog_post, Response):
@@ -54,6 +91,10 @@ class BlogPostDetailView(APIView):
         serializer = BlogPostSerializer(blog_post)
         return Response(serializer.data)
 
+    @extend_schema(
+        request=BlogPostSerializer,
+        responses={200: BlogPostSerializer, 403: str, 400: str},
+    )
     def put(self, request, pk):
         blog_post = self.get_object(pk)
         if request.user != blog_post.author:
@@ -68,6 +109,7 @@ class BlogPostDetailView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(responses={204: None, 403: str})
     def delete(self, request, pk):
         blog_post = self.get_object(pk)
         if request.user != blog_post.author:

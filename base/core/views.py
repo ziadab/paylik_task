@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from drf_spectacular.utils import extend_schema
 from django.contrib.auth.models import User
 from .serializers import UserSerializer, LoginSerializer
 
@@ -11,6 +12,32 @@ from .serializers import UserSerializer, LoginSerializer
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        request=LoginSerializer,
+        responses={
+            200: {
+                "type": "object",
+                "properties": {
+                    "message": {"type": "string"},
+                    "access_token": {"type": "string"},
+                    "refresh_token": {"type": "string"},
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "username": {"type": "string"},
+                            "first_name": {"type": "string"},
+                            "last_name": {"type": "string"},
+                        },
+                    },
+                },
+            },
+            401: str,
+            400: str,
+        },
+        tags=["auth"],
+        auth=None,
+        description="Log in a user and return access and refresh tokens.",
+    )
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
@@ -51,6 +78,31 @@ class LoginView(APIView):
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        request=UserSerializer,
+        responses={
+            201: {
+                "type": "object",
+                "properties": {
+                    "message": {"type": "string"},
+                    "access_token": {"type": "string"},
+                    "refresh_token": {"type": "string"},
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "username": {"type": "string"},
+                            "first_name": {"type": "string"},
+                            "last_name": {"type": "string"},
+                        },
+                    },
+                },
+            },
+            400: str,
+        },
+        auth=None,
+        tags=["auth"],
+        description="Register a new user and return access and refresh tokens.",
+    )
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -75,6 +127,14 @@ class RegisterView(APIView):
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        responses={
+            200: UserSerializer,
+            401: str,
+        },
+        tags=["auth"],
+        description="Retrieve the logged-in user's profile information.",
+    )
     def get(self, request):
         serialized = UserSerializer(request.user)
         return Response(serialized.data, status=status.HTTP_200_OK)
