@@ -20,7 +20,12 @@
           class="flex"
           v-if="userstore.user?.username == blogstore.blog?.author"
         >
-          <button class="px-8 py-2 bg-gray-700 text-white rounded">Edit</button>
+          <button
+            class="px-8 py-2 bg-gray-700 text-white rounded"
+            @click="router.push(`/blog/${id}/edit`)"
+          >
+            Edit
+          </button>
           <button
             class="px-8 py-2 bg-red-700 text-white rounded ml-4"
             @click="blogstore.deleteBlog(id)"

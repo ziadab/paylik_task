@@ -48,7 +48,7 @@ export const blogStore = defineStore("blog", {
       this.error = null;
       try {
         await request.put<Blog>(`blogs/${blog.id}/`, blog);
-        router.push(`/blogs/${blog.id}`);
+        router.push(`/blog/${blog.id}`);
       } catch (error: any) {
         this.error = "Error updating blog. Please try again later.";
       } finally {

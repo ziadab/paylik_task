@@ -51,12 +51,27 @@ export const userStore = defineStore("user", {
         this.loading = false;
       }
     },
-
     async logout() {
       this.user = null;
       this.token = null;
       Cookies.remove("token");
       router.push("/login");
+    },
+
+    async loadMe() {
+      const token = Cookies.get("token");
+      if (token) {
+        this.loading = true;
+        try {
+          const { data } = await request.get<User>("me/"); // Assuming you have an API route for user profile
+          this.user = data;
+        } catch (error: any) {
+          this.error = error.response?.data.message || "Failed to load user";
+          this.logout(); // Optionally log out if token is invalid
+        } finally {
+          this.loading = false;
+        }
+      }
     },
   },
 });
