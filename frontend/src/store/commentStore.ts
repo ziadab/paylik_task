@@ -1,15 +1,20 @@
 import { defineStore } from "pinia";
 import { commentRequet } from "@/utils/request";
-import { Comments, GetComments } from "@/api/types";
+import { Comments, GetComments, PaginationCommments } from "@/api/types";
 
-export const userStore = defineStore("user", {
+export const commentStore = defineStore("comments", {
   state: () => ({
     comments: [] as Comments,
+    pagination: null as PaginationCommments | null,
     loading: false,
     error: null as string | null,
   }),
   actions: {
-    async fetchComments(blogId: string, skip: number = 0, limit: number = 10) {
+    async fetchComments(
+      blogId: string,
+      page: number = 1,
+      page_size: number = 10
+    ) {
       this.loading = true;
       this.error = null;
       try {
@@ -17,12 +22,13 @@ export const userStore = defineStore("user", {
           `comments/${blogId}`,
           {
             params: {
-              skip,
-              limit,
+              page,
+              page_size,
             },
           }
         );
         this.comments = data.comments;
+        this.pagination = data.pagination;
       } catch (error: any) {
         this.error = "Error fetching comments. Please try again later.";
       } finally {
@@ -57,6 +63,34 @@ export const userStore = defineStore("user", {
       } finally {
         this.loading = false;
       }
+    },
+    async fetchNextPage(blogId: string) {
+      if (this.pagination?.has_next) {
+        this.loading = true;
+        this.error = null;
+        try {
+          const { data } = await commentRequet.get<GetComments>(
+            `comments/${blogId}`,
+            {
+              params: {
+                page: this.pagination.current_page + 1,
+                page_size: this.pagination.page_size,
+              },
+            }
+          );
+          this.comments = [...this.comments, ...data.comments];
+          this.pagination = data.pagination;
+        } catch (error: any) {
+          this.error = "Error fetching comments. Please try again later.";
+        } finally {
+          this.loading = false;
+        }
+      }
+    },
+    async clearComments() {
+      this.comments = [];
+      this.loading = false;
+      this.error = null;
     },
   },
 });
