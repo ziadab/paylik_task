@@ -39,7 +39,11 @@
       <div class="">{{ blogstore.blog?.content }}</div>
       <div>
         <CreateComment :blog-id="id" />
-        <Comment v-for="comment in commentstore.comments" :comment="comment" />
+        <Comment
+          v-for="comment in commentstore.comments"
+          :comment="comment"
+          :key="comment.id"
+        />
         <div
           v-if="commentstore.pagination?.has_next"
           class="w-full text-center"

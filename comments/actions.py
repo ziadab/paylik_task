@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import desc
 from models import Comment
 
 
@@ -14,6 +15,7 @@ def get_comments_by_post(db: Session, blog_id: int, page: int = 0, page_size: in
         db.query(Comment)
         .filter(Comment.blog_id == blog_id)
         .options(joinedload(Comment.user))
+        .order_by(desc(Comment.created_at))
         .offset(offset)
         .limit(page_size)
         .all()

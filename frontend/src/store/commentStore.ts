@@ -46,7 +46,7 @@ export const commentStore = defineStore("comments", {
 
         this.fetchComments(blogId);
       } catch (error: any) {
-        this.error = "Error fetching comments. Please try again later.";
+        this.error = "Error creating your comments. Please try again later.";
       } finally {
         this.loading = false;
       }
@@ -59,7 +59,7 @@ export const commentStore = defineStore("comments", {
         await commentRequet.delete(`comments/${commentId}`);
         this.fetchComments(blogId);
       } catch (error: any) {
-        this.error = "Error fetching comments. Please try again later.";
+        this.error = "Error deleting your comment. Please try again later.";
       } finally {
         this.loading = false;
       }
@@ -87,6 +87,19 @@ export const commentStore = defineStore("comments", {
         }
       }
     },
+    async updateComment(blogId: string, commentId: string, content: string) {
+      this.loading = true;
+      this.error = null;
+      try {
+        await commentRequet.put(`comments/${commentId}`, { content });
+        this.fetchComments(blogId);
+      } catch (error: any) {
+        this.error = "Error updating the comment. Please try again later.";
+      } finally {
+        this.loading = false;
+      }
+    },
+
     async clearComments() {
       this.comments = [];
       this.loading = false;
