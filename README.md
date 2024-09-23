@@ -47,6 +47,7 @@ To set up and run the project using Docker Compose, follow these steps:
    DB_NAME=
    JWT_ALGORITHM=
    JWT_SECRET=
+   REDIS_URL=
    ```
 
 3. Create a `.env` file for the FastApi service in the `comments` directory and add your environment variables:

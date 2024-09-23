@@ -4,6 +4,7 @@ from rest_framework import status
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
+from django.core.cache import cache
 from .models import BlogPost
 from .serializers import BlogPostSerializer
 
@@ -73,8 +74,14 @@ class BlogPostDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self, pk):
-        try:
-            return BlogPost.objects.get(pk=pk)
+        try: 
+            blog = cache.get(f"blog_{pk}")
+            if blog:
+                return blog
+            else:
+                blog = BlogPost.objects.get(pk=pk)
+                cache.set(f"blog_{pk}", blog, timeout=60*60*24)
+                return blog
         except BlogPost.DoesNotExist:
             return Response(
                 {"message": "Blog does not exist"}, status=status.HTTP_404_NOT_FOUND
@@ -97,6 +104,7 @@ class BlogPostDetailView(APIView):
     )
     def put(self, request, pk):
         blog_post = self.get_object(pk)
+        
         if request.user != blog_post.author:
             return Response(
                 {"message": "You do not have permission to delete this post"},
@@ -105,7 +113,8 @@ class BlogPostDetailView(APIView):
 
         serializer = BlogPostSerializer(blog_post, data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            blog = serializer.save()
+            cache.set(f"blog_{pk}", blog, timeout=60*60*24)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -119,4 +128,5 @@ class BlogPostDetailView(APIView):
             )
 
         blog_post.delete()
+        cache.delete(f"blog_{pk}")
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -165,3 +165,14 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Blog Platform API",
     "VERSION": "1.0.0",
 }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.getenv("REDIS_URL"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+        "KEY_PREFIX": "base"
+    }
+}
