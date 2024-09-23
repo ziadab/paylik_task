@@ -21,7 +21,7 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const isAuthenticated = Cookies.get("token") || null;
   if ((to.path === "/login" || to.path === "/register") && isAuthenticated)
     next({ path: "/" });
