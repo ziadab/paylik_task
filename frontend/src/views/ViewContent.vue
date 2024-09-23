@@ -92,7 +92,6 @@ const getBlog = () => {
 onMounted(() => {
   getBlog();
   loadComments();
-  console.log("mounted");
 });
 
 onUnmounted(() => {
