@@ -1,9 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from load_env import env
 from models import Base
+import os
 
-engine = create_engine(env("POSTGRESQL_URL"))
+engine = create_engine(os.getenv("POSTGRESQL_URL"))
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base.metadata.create_all(bind=engine)
 

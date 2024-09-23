@@ -2,10 +2,10 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 from pydantic import BaseModel
-from load_env import env
+import os
 
-SECRET_KEY = env("JWT_SECRET")
-ALGORITHM = env("JWT_ALGORITHM")
+SECRET_KEY = os.getenv("JWT_SECRET")
+ALGORITHM = os.getenv("JWT_ALGORITHM")
 
 security = HTTPBearer()
 
