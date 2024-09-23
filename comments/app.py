@@ -17,7 +17,7 @@ def create_comment(
 ):
 
     post = (
-        db.query(models.BlogPost).filter(models.BlogPost.id == comment.post_id).first()
+        db.query(models.BlogPost).filter(models.BlogPost.id == comment.blog_id).first()
     )
 
     if not post:
@@ -26,14 +26,14 @@ def create_comment(
     return actions.create_comment(db, comment, current_user.user_id)
 
 
-@app.get("/comments/{post_id}", response_model=list[schemas.CommentOut])
+@app.get("/comments/{blog_id}", response_model=schemas.CommentsOut)
 def get_comments(
-    post_id: int,
-    skip: int = 0,
-    limit: int = 10,
+    blog_id: int,
+    page: int = 1,
+    page_size: int = 10,
     db: Session = Depends(get_db),
 ):
-    return actions.get_comments_by_post(db, post_id, skip, limit)
+    return actions.get_comments_by_post(db, blog_id, page, page_size)
 
 
 @app.put("/comments/{comment_id}", response_model=schemas.CommentOut)
@@ -56,7 +56,7 @@ def update_comment(
     return actions.update_comment(db, comment_id, comment.content)
 
 
-@app.delete("/comments/{comment_id}", response_model=schemas.CommentOut)
+@app.delete("/comments/{comment_id}")
 def delete_comment(
     comment_id: int,
     db: Session = Depends(get_db),
@@ -72,4 +72,6 @@ def delete_comment(
             status_code=403, detail="Not authorized to delete this comment"
         )
 
-    return actions.delete_comment(db, comment_id)
+    actions.delete_comment(db, comment_id)
+
+    return {"message": "Comment deleted successfully"}

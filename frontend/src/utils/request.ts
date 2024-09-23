@@ -5,6 +5,10 @@ const request = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
+const commentRequet = axios.create({
+  baseURL: import.meta.env.VITE_COMMENT_API_URL,
+});
+
 request.interceptors.request.use(
   async function (config) {
     const token = Cookies.get("token");
@@ -17,4 +21,16 @@ request.interceptors.request.use(
   }
 );
 
-export { request };
+commentRequet.interceptors.request.use(
+  async function (config) {
+    const token = Cookies.get("token");
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
+
+export { request, commentRequet };
