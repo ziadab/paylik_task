@@ -40,13 +40,13 @@ To set up and run the project using Docker Compose, follow these steps:
 2. Create a `.env` file for the Django core service in the `core` directory and add your environment variables:
 
    ```bash
-    USER=
-    PASSWORD=
-    HOST=
-    PORT=
-    NAME=
-    JWT_ALGORITHM=
-    JWT_SECRET=
+   DB_USER=
+   DB_PASSWORD=
+   DB_HOST=
+   DB_PORT=
+   DB_NAME=
+   JWT_ALGORITHM=
+   JWT_SECRET=
    ```
 
 3. Create a `.env` file for the FastApi service in the `comments` directory and add your environment variables:
