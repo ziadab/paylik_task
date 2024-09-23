@@ -1,20 +1,10 @@
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import desc
 from models import Comment
-import redis
-import os
-import pickle
-
-r = redis.Redis.from_url(os.getenv("REDIS_URL"))
 
 
 def get_comment(db: Session, comment_id: int):
-    if r.exists(f"comment:{comment_id}"):
-        return pickle.loads(r.get(f"comment_{comment_id}"))
-    else:
-        comment = db.query(Comment).filter(Comment.id == comment_id).first()
-        r.set(f"comment_{comment_id}", pickle.dumps(comment), ex=60*60*24)
-        return comment
+    return db.query(Comment).filter(Comment.id == comment_id).first()
 
 
 def get_comments_by_post(db: Session, blog_id: int, page: int = 0, page_size: int = 10):
@@ -62,7 +52,6 @@ def update_comment(db: Session, comment_id: int, new_content: str):
         db_comment.content = new_content
         db.commit()
         db.refresh(db_comment)
-        r.set(f"comment_{comment_id}", pickle.dumps(db_comment), ex=60*60*24)
     return db_comment
 
 
@@ -71,5 +60,4 @@ def delete_comment(db: Session, comment_id: int):
     if db_comment:
         db.delete(db_comment)
         db.commit()
-        r.delete(f"comment_{comment_id}")
     return db_comment
