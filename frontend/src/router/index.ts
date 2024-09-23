@@ -3,11 +3,13 @@ import Home from "@/views/Home.vue";
 import Login from "@/views/Login.vue";
 import Register from "@/views/Register.vue";
 import CreateBlog from "@/views/CreateBlog.vue";
+import ViewContent from "@/views/ViewContent.vue";
 import Cookies from "js-cookie";
 
 const routes = [
   { path: "/", component: Home, meta: { requiresAuth: true } },
   { path: "/blog/create", component: CreateBlog, meta: { requiresAuth: true } },
+  { path: "/blog/:id", component: ViewContent, meta: { requiresAuth: true } },
   { path: "/login", component: Login },
   { path: "/register", component: Register },
 ];

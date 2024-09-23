@@ -1,7 +1,7 @@
 
 <template>
     <nav class="border px-2 sm:px-4 py-8 bg-white flex items-center border-b-gray-200">
-        <input @keypress="store.fetchBlogs" className="mx-auto w-full focus:outline-none max-w-5xl"
+        <input @change="store.fetchBlogs" className="mx-auto w-full focus:outline-none max-w-5xl"
             placeholder="Search for blogs" v-model="store.title" />
     </nav>
     <div class="mx-auto  max-w-xs px-2 md:max-w-5xl">
@@ -39,10 +39,10 @@ import Blog from "@/components/Blog.vue";
 import { Plus } from "lucide-vue-next"
 import { RouterLink } from "vue-router";
 
-import { blogStore } from "@/store/blogStore";
+import { blogsStore } from "@/store/blogsStore";
 import { onMounted } from "vue"
 
-const store = blogStore();
+const store = blogsStore();
 
 const fetchBlogs = () => {
     store.fetchBlogs();
