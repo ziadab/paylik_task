@@ -91,7 +91,7 @@ Both services expose their API documentation at the `/docs` endpoint.
 
 ### Assumptions and Design Decisions
 
-Same Database for Microservice: The FastAPI and DRF microservices share a common database to ensure seamless access to user and blog data, allowing FastAPI to validate users and verify blog existence directly. This reduces the need for complex inter-service communication, maintaining data consistency and integrity across both services. This approach ensures efficiency while allowing for scalability in the future.
-JWT Authentication: The JWT tokens are issued by the Django core service and used by the FastAPI microservice for user authentication.
-Pagination: Blog posts and comments are paginated to improve performance and user experience.
-Containerization: Each service (frontend, core, microservice) is containerized using Docker for ease of development and deployment.
+- **Same Database for Microservice**: The FastAPI and DRF microservices share a common database to ensure seamless access to user and blog data, allowing FastAPI to validate users and verify blog existence directly. This reduces the need for complex inter-service communication, maintaining data consistency and integrity across both services. This approach ensures efficiency while allowing for scalability in the future.
+- **JWT Authentication**: The JWT tokens are issued by the Django core service and used by the FastAPI microservice for user authentication.
+- **Pagination**: Blog posts and comments are paginated to improve performance and user experience.
+- **Containerization**: Each service (frontend, core, microservice) is containerized using Docker for ease of development and deployment.
